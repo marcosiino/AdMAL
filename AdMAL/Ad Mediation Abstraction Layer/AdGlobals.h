@@ -28,4 +28,3 @@
 #define NETWORK_MOPUB @"mopub"
 #define NETWORK_MOBFOX @"mobfox"
 #define NETWORK_APPCIRCLE @"appcircle"
-#define NETWORK_SMAATO @"smaato"
