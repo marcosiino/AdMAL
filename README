@@ -1,0 +1,171 @@
+
+Ad Mediation Abstraction Layer (AdMAL) was developed by Marco Siino, DooLabs (http://www.marcosiino.it/ - http://www.doolabs.com/).
+For info and suggestions email me at: support@marcosiino.it or support@doolabs.com.
+
+If you find this useful, please donate to the following paypal address: siino.marco@gmail.com - I appreciate it, Thanks!
+
+
+Description:
+-------------
+AdMAL is a system built on top of AdWhirl that allows to easily integrate AdWhirl on your apps and to easily use both AdWhirl's officially support ad network and also some unsupported networks like MobClix, MobFox, B!Mobile, etc..
+
+After you have inserted the AdMAL necessary files and frameworks and ad sdks, you'll be able to request a banner from AdWhirl's supported and unsupported networks with only a line of code.
+
+Note: ** AdMAL is currently not compatible with ARC (Automatic Reference Counting)
+
+Note: AdMAL tries to automatically center the banner when the app runs on iPad screen (native). This means that if a retrieved banner width is not wide as the screen wide, AdMAL will center it. Also when you rotate the device the banner is recentered automatically.
+
+
+AdMAL's supported custom networks list
+--------------------------------------
+
+The following networks are not officially supported by AdWhirl, but using AdMAL you can use them in your app:
+
+- B!Mobile (www.bmobile.com) - AdWhirl's Custom Event Function Name: bmobile
+- MobClix (www.mobclix.com) - AdWhirl's Custom Event Function Name: mobclix
+- MobFox (www.mobfox.com) - AdWhirl's Custom Event Function Name: mobfox
+- MoPub (www.mopub.com)  - AdWhirl's Custom Event Function Name: mopub
+- Flurry AppCircle ad banners (www.flurry.com) - AdWhirl's Custom Event Function Name: appcircle
+
+Note: You can also use the networks that adwhirl supports natively (for example AdMob, Millennial Media, iAd, InMobi, ZestADZ, etc...), as described in AdWhirl Instructions (simply add the network sdk and required frameworks, add the AdWhirl's network adapter in your project from the AdWhirl/adapters folder, then enable and allocate the network from your AdWhirl web panel).
+
+
+Preliminary steps:
+------------------
+
+1. Add the Ad Mediation Abstraction Layer folder to your project
+
+
+2. Add the AdWhirl SDK folder. Add the sdks for each ad network you want to use in your app, choosing between the custom networks supported by AdMAL (see AdMAL's supported custom networks list), and the AdWhirl's officially supported networks (i.e. Millennial Media, AdMob, ZestADZ, etc...).
+
+3. Remove the AdMAL's custom network adapters for the AdMAL's custom networks you will not use, from the "custom network adapters" project folder inside the "Ad Mediation Abstraction Layer" folder (just remove reference only, do not delete phisically because you may need it later).
+
+4. Remove the AdWhirl's custom adapters for the AdWhirl's officially supported networks you will not use. Do this from the "adapters" folder inside the AdWhirl's sdk folder in your project (just remove reference only, do not delete phisically because you may eed it later).
+
+5. Set the following Other Linker Flags in your project build settings:
+
+-all_load
+-ObjC
+
+6. Add these frameworks:
+
+SystemConfiguration.framework (weak/optional)
+CoreLocation.framework
+iAd.framework (weak)
+MessageUI.framework (weak)
+MediaPlayer.framework
+EventKit.framework (weak)
+EventKitUI.framework (weak)
+CoreGraphics.framework
+QuartzCore.framework
+CoreMotion.framework (weak)
+AddressBook.framework
+AddressBookUI.framework
+AudioToolbox.framework
+StoreKit.framework
+
+
+Initialization steps:
+----------------------
+
+1. Import the AdMediationALManager in your app delegate:
+
+    #import "AdMediationALManager.h"
+
+2. Set the AdWhirl app key in your App delegate, writing the following lines on the beginning of didFinishLaunchingWithOptions:
+
+    [[AdMediationALManager sharedManager] setAppKey:@"your-ad-whirl-app-key-here"];
+    
+3. Enable each AdMAL's custom network you want to use, setting the app keys of each network. In the following example i will enable MobClix, B!Mobile, MoPub and MobFox. Remember to set your app keys for each network in the placeholders:
+
+    //MobClix
+    [[AdMediationALManager sharedManager] enableCustomNetwork:NETWORK_MOBCLIX withSettings:[NSDictionary dictionaryWithObject:@"your-mobclix-app-key-here" forKey:S_APPKEY]];
+    
+    //B!Mobile
+    [[AdMediationALManager sharedManager] enableCustomNetwork:NETWORK_BMOBILE withSettings:
+     [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"your-bmobile-partner-id-here", @"your-bmobile-site-id-here", [NSNumber numberWithBool:FALSE], nil] 
+                                 forKeys:[NSArray arrayWithObjects:S_GLOBALKEY, S_APPKEY, S_TESTING, nil]
+      ]
+     ];
+    
+    //MoPub
+    [[AdMediationALManager sharedManager] enableCustomNetwork:NETWORK_MOPUB withSettings:[NSDictionary dictionaryWithObject:@"your-mopub-app-key-here" forKey:S_APPKEY]];
+    
+    //MobFox
+    [[AdMediationALManager sharedManager] enableCustomNetwork:NETWORK_MOBFOX withSettings:[NSDictionary dictionaryWithObject:@"your-mobfox-app-key-here" forKey:S_APPKEY]];
+    
+    //AppCircle
+    [[AdMediationALManager sharedManager] enableCustomNetwork:NETWORK_APPCIRCLE withSettings:[NSDictionary dictionaryWithObject:@"your-appcircle-app-key-here" forKey:S_APPKEY]];
+    
+4. Now we have to add the banner to our viewcontrollers. For each view controller to which you want to add a banner you have to import "AdViewController.h" and then inherit the view controller class from AdViewController instead of UIViewController, and then conform it to the AdMediationALDelegate. For example, suppose you have a view controller called MyViewController with the following class files: MyViewController.h and MyViewController.m. (By inheriting from AdViewController the ad banner integration is semplified: all you need to do is calling [self requestAdWithDelegate:...] as explained later, instead of instancing AdMediationAL, releasing it, calling didRotateInterface to AdMediationAL when the viewController rotates, etc...)
+
+Open MyViewController.h and add an #import "AdViewController.h", then change the following row:
+
+    @interface MyViewController : UIViewController
+    
+with the following:
+
+    @interface MyViewController : AdViewController<AdMediationALDelegate>
+
+If you already have some other protocols in your old view controller (inside <>), just add the AdMediationALDelegate at the end, like this:
+
+    @interface MyViewController : AdViewController<ADelegate, AnotherDelegate, AdMediationALDelegate>
+    
+Now we have to request the ad banner on our view controller viewDidLoad method, calling [self requestAdWithDelegate: andPosition:]. In our example we will do the following:
+
+Open MyViewController.m, and place the following line at the end of viewDidLoad:
+
+    [self requestAdWithDelegate:self andPosition:POSITION_TOP];
+    
+This way you will request and ad banner that will be added to the currently view controller's view (self.view) at the top (POSITION_TOP). You can also specify POSITION_BOTTOM to place the banner at the bottom of the view, or POSITION_RANDOM to place the banner randomly at top or bottom.
+
+You have finish! 
+
+Note: If you want to automatically resize the elements of your view when the ad banner shows (for example you have a tableview that you want to automatically resize to fit the ad banner) you could use this method instead of the previous: [self requestAdWithDelegate: andPosition: andMainViewContainer: which adds the andMainViewContainer parameter. You can pass a UIView* to this paramer (it could be a tableView, or a view container that contains a complex view hierarchy on your view controller's view). Calling this methods AdMAL will automagically resize the viewContainer you passed as parameter to fit the ad banner, once AdMAL receives it. This actually works with POSITION_TOP, POSITION_BOTTOM and POSITION_RANDOM banner positions.
+
+
+Configuring AdWhirl to add support for the AdMAL's custom networks:
+--------------------------------------------------------------------
+
+AdWhirls officially supports some ad networks (for example AdMob, Millennial Media, iAd, etc...). To support these networks in your apps you just have to add their SDKs and add the frameworks they needs on your project, then enable them on AdWhirl and set their allocation.
+
+But AdMAL is built on top of AdWhirl to allow you to support also some extra ad networks that are not officially supported by AdWhirl (see AdMAL's supported custom networks list).
+
+For these extra networks you have to add their app keys hard coded in your project (as you saw in Initialization steps), then you have to add them to AdWhirl as "custom events" to dinamically manage their allocation at any time like the other supported networks. In order to do that follow these steps:
+
+1. Open your AdWhirl's app, inside your AdWhirl account.
+
+2. Foreach extra network you want to enable (only the networks in the AdMAL's supported custom networks list is supported) click "Add Custom Event" and sets the name of the network in the "Name" field. You must also set a specific identifier in the "Function name" field, that depends on the network you're adding (see the "AdWhirl's Custom Event Function Name" in the "AdMAL's supported custom networks list" section above, for the network you're adding). The Function Name is case-sensitive, make sure you type it correctly and without extra characters. Click Add Event.
+
+3. Click Save Changes
+
+4. Allocate your networks as you like
+
+Example to add MobClix network on AdWhirl:
+    Click "Add custom event" and type the following values for each field:
+        Name: MobClix
+        Function Name: mobclix
+        
+        
+Optional: Implementing a new AdMAL Custom Network to support a new ad network
+------------------------------------------------------------------------------
+
+If you want to enable AdMAL to support a new network that is not natively supported by AdWhirl, you can implement a new AdMAL's Custom Network:
+
+1. Create the new Custom Network Class files (.m and .h) inside the AdMAL/custom network adapters/ folder and inherit the class from AdCustomNetwork class. Use an existing custom network as template and change it based on the network sdk: you must implement the ad network logic as described in its sdk documentation, adapting it to the AdMAL's Custom Network structure.
+
+2. You will need to include the network sdk in the project
+
+3. Add a new #define for the new network in AdMAL/AdGlobals.h
+
+4. Add a new "else if" block for this network inside the two methods of AdCustomNetworkFactory.m. Copy from another network "else if" block and change the string inside NSClassFromString to exactly reflect the name of the class of the new Custom Network you are creating. Remember to do this for the two methods you find inside AdCustomNetworkFactor.m (createCustomNetwork: and getCustomNetworkClass:
+
+5. add a new method in AdMediationAL.m like the following (this method is directly called by AdWhirl Custom Event). Note that the name of the method must be exactly like the Function Name you've set in AdWhirl when you added the Custom Event for this new network. Let suppose we are creating a Custom Network for the network Cool Network and suppose we added a Custom Event in AdWhirl with Function Name "coolnetwork". AdWhirl will search for a method called "coolnetwork" inside AdMediationAL.m, so the method we need to create must be like the following:
+
+    -(void)coolnetwork {
+        [self requestCustomNetworkAd:NETWORK_COOLNETWORK];
+    }
+    
+    Note: NETWORK_COOLNETWORK is the #define you added in AdGlobals.h for this network.
+
+6. Test, test, test. Pay attention with the memory management. AdMediationAL automatically deallocates the last custom network instance when it's time to call a new (different) custom network banner or a new AdWhirl's officially supported network banner. This may cause crashes if the network sdk or you doesn't manage the memory allocation correctly.
