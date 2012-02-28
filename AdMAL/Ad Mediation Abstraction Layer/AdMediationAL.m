@@ -25,6 +25,27 @@
 
 #pragma mark instance methods
 
+- (void) hideAds {
+    if (adView) {
+
+        //Replace adView's view with "nil"
+        [adView replaceBannerViewWith:nil];
+        
+        //Tell AdWhirl to stop requesting Ads
+        [adView ignoreNewAdRequests];
+        
+        //Set adView delegate to "nil"
+        [adView setDelegate:nil];
+    
+        //Hide adWhirlView
+        adView.hidden = YES;
+        
+        //Resize the view
+        if(uiMainContainerView)
+            [self autoResizeViewContainer:uiMainContainerView];
+    }
+}
+
 -(id)init {
     NSAssert(false, @"use initAdWithKey: instead of init");
     
@@ -75,6 +96,8 @@
       */  
         customAdViews = [[NSMutableDictionary alloc] init];
         
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hideAds) name:@"hideAllAds" object:nil];
+        
     }
     
     return self;
@@ -118,6 +141,8 @@
     
     [self deallocateAllLoadedCustomNetworks];
     [customAdViews release];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     
     [super dealloc];
 }

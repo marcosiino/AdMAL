@@ -33,5 +33,7 @@
 //Request an ad banner without automatically resizing the viewContainer (see above)
 -(void)requestAdWithDelegate:(id<AdMediationALDelegate>)del andPosition:(CGPoint)pos;
 
+//Hide the banner view and stop requesting new ads
+-(void)hideAds;
 
 @end

@@ -38,6 +38,7 @@
 
 @protocol AdMediationALDelegate
 
+@optional
 -(void)adMediationALDidReceiveAdWithRect:(CGRect)adRect;
 -(void)adMediationALDidFailToReceiveAd;
 
@@ -81,5 +82,8 @@
 
 -(CGSize)getAdSize;
 -(CGPoint)getAdPosition;
+
+//Hide the ad banner view and stop requesting new ads
+-(void)hideAds;
 
 @end

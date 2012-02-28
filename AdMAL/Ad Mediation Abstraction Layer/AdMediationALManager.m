@@ -1,7 +1,7 @@
 //
 //  AdMediationALManager.m
 //  Ad Mediation Abstraction Layer
-//
+
 /* Copyright 2012 Marco Siino, DooLabs (http://www.marcosiino.it - http://www.doolabs.com)
  
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -135,6 +135,9 @@ static id sharedInstance = nil;
     
 }
 
+-(void)hideAllAds {
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"hideAllAds" object:nil];
+}
 
 -(void)dealloc {
     [appKey release];

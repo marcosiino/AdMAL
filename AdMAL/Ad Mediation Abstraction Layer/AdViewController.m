@@ -50,6 +50,10 @@
     [self requestAdWithDelegate:del andPosition:pos andMainViewContainer:nil];
 }
 
+-(void)hideAds {
+    [adMediation hideAds];
+}
+
 -(void)dealloc {
     [adMediation release];
     
