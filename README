@@ -13,7 +13,7 @@ After you have inserted the AdMAL necessary files and frameworks and ad sdks, yo
 
 Note: ** AdMAL is currently not compatible with ARC (Automatic Reference Counting)
 
-Note: AdMAL tries to automatically center the banner when the app runs on iPad screen (native). This means that if a retrieved banner width is not wide as the screen wide, AdMAL will center it. Also when you rotate the device the banner is recentered automatically.
+Note: AdMAL tries to automatically center the banner when the app runs on iPad screen (native). This means that if a retrieved banner width is not wide as the screen wide, AdMAL will center it. Also when you rotate the device the banner is re-centered automatically.
 
 
 AdMAL's supported custom networks list
@@ -28,7 +28,6 @@ The following networks are not officially supported by AdWhirl, but using AdMAL 
 - Flurry AppCircle ad banners (www.flurry.com) - AdWhirl's Custom Event Function Name: appcircle
 
 Note: You can also use the networks that adwhirl supports natively (for example AdMob, Millennial Media, iAd, InMobi, ZestADZ, etc...), as described in AdWhirl Instructions (simply add the network sdk and required frameworks, add the AdWhirl's network adapter in your project from the AdWhirl/adapters folder, then enable and allocate the network from your AdWhirl web panel).
-
 
 Preliminary steps:
 ------------------
@@ -150,7 +149,9 @@ Example to add MobClix network on AdWhirl:
 Optional: Implementing a new AdMAL Custom Network to support a new ad network
 ------------------------------------------------------------------------------
 
-If you want to enable AdMAL to support a new network that is not natively supported by AdWhirl, you can implement a new AdMAL's Custom Network:
+If you want to enable AdMAL to support a new network that is not natively supported by AdWhirl, you can implement a new AdMAL's Custom Network. If you created a new custom network adapter we appreciate if you'll share it with the community! Contact me or send a pull request so i can add it to this sdk.
+
+Here the instructions on how you can create a new custom network adapter for AdMAL:
 
 1. Create the new Custom Network Class files (.m and .h) inside the AdMAL/custom network adapters/ folder and inherit the class from AdCustomNetwork class. Use an existing custom network as template and change it based on the network sdk: you must implement the ad network logic as described in its sdk documentation, adapting it to the AdMAL's Custom Network structure.
 
