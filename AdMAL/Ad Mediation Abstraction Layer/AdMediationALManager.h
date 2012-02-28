@@ -1,7 +1,7 @@
 //
 //  AdMediationALManager.h
 //  Ad Mediation Abstraction Layer
-//
+
 /* Copyright 2012 Marco Siino, DooLabs (http://www.marcosiino.it - http://www.doolabs.com)
  
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -39,5 +39,8 @@
 -(NSDictionary*)getSettingsForCustomNetwork:(NSString*)network;
 
 -(AdMediationAL*)requestAdWithDelegate:(id<AdMediationALDelegate>)delegate andParentViewController:(UIViewController*)viewController andParentView:(UIView*)view andPosition:(CGPoint)pos;
+
+//Hide all ads (sends a notification to all AdMediationAL instances to hide their ad banner view and to stop requesting new ads.
+-(void)hideAllAds;
 
 @end
