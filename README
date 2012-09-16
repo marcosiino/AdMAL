@@ -1,4 +1,3 @@
-
 Ad Mediation Abstraction Layer (AdMAL) was developed by Marco Siino, DooLabs (http://www.marcosiino.it/ - http://www.doolabs.com/).
 For info and suggestions email me at: support@marcosiino.it or support@doolabs.com.
 
@@ -21,7 +20,7 @@ AdMAL's supported custom networks list
 
 The following networks are not officially supported by AdWhirl, but using AdMAL you can use them in your app:
 
-- B!Mobile (www.bmobile.com) - AdWhirl's Custom Event Function Name: bmobile
+- Lumata (ex B!Mobile) (www.lumata.com) - AdWhirl's Custom Event Function Name: bmobile
 - MobClix (www.mobclix.com) - AdWhirl's Custom Event Function Name: mobclix
 - MobFox (www.mobfox.com) - AdWhirl's Custom Event Function Name: mobfox
 - MoPub (www.mopub.com)  - AdWhirl's Custom Event Function Name: mopub
@@ -33,7 +32,6 @@ Preliminary steps:
 ------------------
 
 1. Add the Ad Mediation Abstraction Layer folder to your project
-
 
 2. Add the AdWhirl SDK folder. Add the sdks for each ad network you want to use in your app, choosing between the custom networks supported by AdMAL (see AdMAL's supported custom networks list), and the AdWhirl's officially supported networks (i.e. Millennial Media, AdMob, ZestADZ, etc...).
 
@@ -80,7 +78,7 @@ Initialization steps:
     //MobClix
     [[AdMediationALManager sharedManager] enableCustomNetwork:NETWORK_MOBCLIX withSettings:[NSDictionary dictionaryWithObject:@"your-mobclix-app-key-here" forKey:S_APPKEY]];
     
-    //B!Mobile
+    //Lumata (ex B!Mobile)
     [[AdMediationALManager sharedManager] enableCustomNetwork:NETWORK_BMOBILE withSettings:
      [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"your-bmobile-partner-id-here", @"your-bmobile-site-id-here", [NSNumber numberWithBool:FALSE], nil] 
                                  forKeys:[NSArray arrayWithObjects:S_GLOBALKEY, S_APPKEY, S_TESTING, nil]
